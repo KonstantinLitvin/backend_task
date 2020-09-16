@@ -3,12 +3,11 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
+from config import COMMENTS_FILE, POST_FILE
 from utils import Post, get_current_time_iso, Comment
 
 
 class JsonStore:
-    COMMENTS_FILE = 'comments_1.json'
-    POST_FILE = 'posts_1.json'
 
     def __init__(self):
         self.posts = self._load_posts()
@@ -66,9 +65,9 @@ class JsonStore:
             return json.load(f)
 
     def _load_comments(self):
-        comments = self.read_json(self.COMMENTS_FILE).get('comments')
+        comments = self.read_json(COMMENTS_FILE).get('comments')
         if comments is None:
-            raise Exception(f'No comments key in {self.COMMENTS_FILE}')
+            raise Exception(f'No comments key in {COMMENTS_FILE}')
 
         comments = sorted([Comment(**c) for c in comments])
         d = defaultdict(list)
@@ -76,9 +75,9 @@ class JsonStore:
         return d
 
     def _load_posts(self):
-        posts = self.read_json(self.POST_FILE).get('posts')
+        posts = self.read_json(POST_FILE).get('posts')
         if posts is None:
-            raise Exception(f'No posts key in {self.POST_FILE}')
+            raise Exception(f'No posts key in {POST_FILE}')
 
         posts = {p['id']: Post(**p) for p in posts}
         return {k: v for k, v in sorted(posts.items(), key=lambda item: item[1])}
